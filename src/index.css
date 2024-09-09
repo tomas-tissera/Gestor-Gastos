@@ -1,42 +1,83 @@
-html {
-  height:100%;
+/* Estilos globales */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
+/* Fuente general y colores */
 body {
-  margin:0;
-  background-color: #1c436a;
-  height:100%;
+  font-family: 'Roboto', sans-serif;
+  background-color: #f4f7fa;
+  color: #333;
+  font-size: 16px;
+  line-height: 1.5;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
 
-
-
-.content {
-  background-color:rgb(255,111,15);
-  border-radius: 15px;
-  box-shadow:0 0 .25em rgba(0,0,0,.25);
-  box-sizing:border-box;
-  left:50%;
-  padding: 15px;
-  position:fixed;
-  text-align:center;
-  top:50%;
-  transform:translate(-50%, -50%);
+/* Contenedor principal */
+#root {
+  width: 100%;
+  max-width: 1200px;
+  padding: 20px;
+  margin: 0 auto;
+  background-color: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
 }
 
-h1 {
-  font-family:monospace;
-}
-
-@keyframes slide {
-  0% {
-    transform:translateX(-25%);
-  }
-  100% {
-    transform:translateX(25%);
-  }
-}
+/* Responsividad */
 @media (max-width: 768px) {
-  .content {
-    width: 95%; /* Ancho para pantallas de móviles */
+  #root {
+    width: 90%;
+    padding: 10px;
   }
+}
+
+@media (max-width: 480px) {
+  body {
+    font-size: 14px;
+  }
+
+  #root {
+    width: 100%;
+    padding: 5px;
+  }
+}
+
+/* Estilo para enlaces */
+a {
+  text-decoration: none;
+  color: #007bff;
+}
+
+a:hover {
+  text-decoration: underline;
+  color: #0056b3;
+}
+
+/* Estilos para formularios, botones, etc. si se incluyen más adelante */
+input,
+button {
+  font-family: 'Roboto', sans-serif;
+  padding: 10px;
+  margin: 10px 0;
+  border: none;
+  border-radius: 5px;
+  outline: none;
+}
+
+button {
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
 }
