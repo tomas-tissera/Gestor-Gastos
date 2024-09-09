@@ -1,0 +1,42 @@
+html {
+  height:100%;
+}
+
+body {
+  margin:0;
+  background-color: #1c436a;
+  height:100%;
+}
+
+
+
+.content {
+  background-color:rgb(255,111,15);
+  border-radius: 15px;
+  box-shadow:0 0 .25em rgba(0,0,0,.25);
+  box-sizing:border-box;
+  left:50%;
+  padding: 15px;
+  position:fixed;
+  text-align:center;
+  top:50%;
+  transform:translate(-50%, -50%);
+}
+
+h1 {
+  font-family:monospace;
+}
+
+@keyframes slide {
+  0% {
+    transform:translateX(-25%);
+  }
+  100% {
+    transform:translateX(25%);
+  }
+}
+@media (max-width: 768px) {
+  .content {
+    width: 95%; /* Ancho para pantallas de móviles */
+  }
+}

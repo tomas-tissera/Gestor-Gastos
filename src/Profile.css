@@ -1,0 +1,56 @@
+.submitLogout{
+  position: absolute;
+  top: 0; /* Posiciona el elemento en la parte superior del contenedor */
+  padding: 15px;
+  width: 90%;
+}
+.container{
+    background-color: rgb(255, 255, 255);
+     width: 1300px;/* cambiar el dia de mañana */
+     height: 580px;
+     display: flex;
+     flex-direction: column;
+     border-radius: 15px;
+}
+.box{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    height: 90%;
+}
+.TabContext{
+    display: flex;
+  justify-content: center;
+}
+.box2{
+    border-bottom: 1px solid var(--divider-color);
+  display: flex;
+  justify-content: center;
+}
+.MuiTabs-flexContainer{
+    align-items: center;
+    justify-content: center;
+}
+.MuiTabPanel-root{
+  padding: 0px;
+  }
+.btn{
+  font-size: 18px;
+  margin: 5px;
+}
+@media (max-width: 768px) {
+    .submitLogout{
+      top: 0; /* Posiciona el elemento en la parte superior del contenedor */
+      width: 90%;
+      height: 90%;
+
+    }
+    .container {
+      width: 100%; /* Ancho para pantallas de móviles */
+    }
+    .MuiTabs-flexContainer{
+        display: flex;
+        flex-direction: column;
+    }
+  }
+  

@@ -1,0 +1,29 @@
+.container{
+    
+    width: 420px;
+    height: 350px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+}
+.user{
+    font-size: 80px;
+    margin-bottom: 3rem;
+}
+input{
+    border-radius: 8px;
+    height: 25px;
+}
+.contenedor_usuario{
+    display: grid;
+    padding: 5px;
+}
+.btn{
+    font-size: 15px;
+    height: 25px;
+    width: 100%;
+    border-radius: 15px;
+    margin-top: 1rem;
+    cursor: pointer;
+}
