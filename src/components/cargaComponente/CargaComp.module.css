@@ -35,4 +35,19 @@
   .button:hover {
     background-color: #e65d0b;
   }
+  .formGroup input,
+  .formGroup textarea {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    width: 100%;
+  }
+  
+  .formGroup input[type="color"] {
+    padding: 0;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+  }
   

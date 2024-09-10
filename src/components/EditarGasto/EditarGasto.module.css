@@ -36,19 +36,19 @@
     border: 1px solid #ddd;
     border-radius: 4px;
     font-size: 1rem;
-    width: 100%;
+    width: 95%;
   }
   
   .formGroup input[type="color"] {
     padding: 0;
     border: none;
     cursor: pointer;
-    width: 50px; /* Ajustar el ancho del selector de color */
+    width: 98%;
   }
   
   .formGroup textarea {
     resize: vertical;
-    height: 100px; /* Ajustar la altura del área de texto */
+    height: 100px;
   }
   
   .btnSubmit {
@@ -63,6 +63,22 @@
   }
   
   .btnSubmit:hover {
-    background-color: #e65f00; /* Color ligeramente más oscuro al pasar el cursor */
+    background-color: #e65f00;
+  }
+  
+  /* Spinner de carga */
+  .loader {
+    border: 8px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 8px solid #FF6F0F; /* Color del spinner */
+    width: 60px;
+    height: 60px;
+    animation: spin 1s linear infinite;
+    margin: 2rem auto; /* Centrar el spinner */
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
   }
   
