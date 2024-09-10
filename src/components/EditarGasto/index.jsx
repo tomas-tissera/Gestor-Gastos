@@ -12,7 +12,8 @@ const EditarGasto = () => {
     monto: '',
     fecha: '',
     descripcion: '',
-    color: ''
+    color: '',
+    cantCiclo: '' // Asegúrate de agregar este campo al estado
   });
   const [loading, setLoading] = useState(true); // Estado de carga
 
@@ -67,6 +68,16 @@ const EditarGasto = () => {
               type="number"
               name="monto"
               value={gasto.monto}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className={styles.formGroup}>
+            <label>Cant. días del Ciclo</label>
+            <input
+              type="number"
+              name="cantCiclo" // Asegúrate de que el nombre del campo sea correcto
+              value={gasto.cantCiclo}
               onChange={handleChange}
               required
             />
