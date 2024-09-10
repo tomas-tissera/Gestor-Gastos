@@ -1,0 +1,68 @@
+/* EditarGasto.module.css */
+.editarGastoContainer {
+    padding: 1rem;
+    max-width: 600px;
+    margin: 0 auto;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  h2 {
+    margin-bottom: 1rem;
+    color: #333;
+  }
+  
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .formGroup label {
+    font-weight: bold;
+    color: #555;
+  }
+  
+  .formGroup input,
+  .formGroup textarea {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    width: 100%;
+  }
+  
+  .formGroup input[type="color"] {
+    padding: 0;
+    border: none;
+    cursor: pointer;
+    width: 50px; /* Ajustar el ancho del selector de color */
+  }
+  
+  .formGroup textarea {
+    resize: vertical;
+    height: 100px; /* Ajustar la altura del área de texto */
+  }
+  
+  .btnSubmit {
+    background-color: #FF6F0F;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .btnSubmit:hover {
+    background-color: #e65f00; /* Color ligeramente más oscuro al pasar el cursor */
+  }
+  

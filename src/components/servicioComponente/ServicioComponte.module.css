@@ -17,6 +17,7 @@
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     border-left: 5px solid #FF6F0F;
+    position: relative; /* Necesario para posicionar el ícono */
   }
   
   .gastoCard h3 {
@@ -33,6 +34,20 @@
     font-weight: bold;
   }
   
+  /* Estilos del ícono de edición */
+  .editIcon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #FF6F0F;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+  
+  .editIcon:hover {
+    transform: scale(1.1); /* Animación de hover */
+  }
+  
   /* Spinner de carga */
   .loader {
     border: 8px solid #f3f3f3;
@@ -41,7 +56,7 @@
     width: 60px;
     height: 60px;
     animation: spin 1s linear infinite;
-    margin: 0 auto; /* Centrar el spinner */
+    margin: 0 auto;
   }
   
   @keyframes spin {
