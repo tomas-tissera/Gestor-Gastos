@@ -1,0 +1,35 @@
+    /* ServicioComponte.module.css */
+.servicioContainer {
+    padding: 1rem;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .gastosList {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .gastoCard {
+    background-color: #f9f9f9;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-left: 5px solid #FF6F0F; /* Color dinámico basado en el gasto */
+  }
+  
+  .gastoCard h3 {
+    margin: 0 0 0.5rem 0;
+    color: #333;
+  }
+  
+  .gastoCard p {
+    margin: 0.2rem 0;
+    color: #555;
+  }
+  
+  .gastoCard strong {
+    font-weight: bold;
+  }
+  
