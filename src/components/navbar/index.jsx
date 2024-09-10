@@ -6,13 +6,13 @@ const Navbar = () => {
   return (
     <nav className="navbar">
       <div className="navbar-logo">
-        <Link to="/">MiLogo</Link>
+        <Link to="/profile">MiLogo</Link>
       </div>
       <ul className="navbar-links">
         <li>
           <NavLink 
             exact 
-            to="/" 
+            to="/profile" 
             activeClassName="active"
             className="nav-item"
           >
@@ -21,16 +21,16 @@ const Navbar = () => {
         </li>
         <li>
           <NavLink 
-            to="/about" 
+            to="/carga" 
             activeClassName="active"
             className="nav-item"
           >
-            Acerca de
+            Carga
           </NavLink>
         </li>
         <li>
           <NavLink 
-            to="/services" 
+            to="/servicios" 
             activeClassName="active"
             className="nav-item"
           >
@@ -39,11 +39,11 @@ const Navbar = () => {
         </li>
         <li>
           <NavLink 
-            to="/contact" 
+            to="/actualizar" 
             activeClassName="active"
             className="nav-item"
           >
-            Contacto
+            Actualizar
           </NavLink>
         </li>
       </ul>
