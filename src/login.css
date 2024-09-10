@@ -1,5 +1,5 @@
 /* Estilos generales */
-body {
+.login {
     font-family: 'Roboto', sans-serif;
     background-color: #f4f7fa;
     margin: 0;
@@ -8,6 +8,9 @@ body {
     align-items: center;
     justify-content: center;
     height: 100vh;
+  }
+  body{
+    background-color: #f4f7fa;
   }
   
   /* Estilos para el contenedor del login */

@@ -1,83 +1,13 @@
-/* Estilos globales */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
 
 /* Fuente general y colores */
 body {
-  font-family: 'Roboto', sans-serif;
-  background-color: #f4f7fa;
-  color: #333;
-  font-size: 16px;
-  line-height: 1.5;
   padding: 0;
   margin: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
 }
 
 /* Contenedor principal */
 #root {
   width: 100%;
-  max-width: 1200px;
-  padding: 20px;
-  margin: 0 auto;
-  background-color: #fff;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
-}
-
-/* Responsividad */
-@media (max-width: 768px) {
-  #root {
-    width: 90%;
-    padding: 10px;
-  }
-}
-
-@media (max-width: 480px) {
-  body {
-    font-size: 14px;
-  }
-
-  #root {
-    width: 100%;
-    padding: 5px;
-  }
-}
-
-/* Estilo para enlaces */
-a {
-  text-decoration: none;
-  color: #007bff;
-}
-
-a:hover {
-  text-decoration: underline;
-  color: #0056b3;
-}
-
-/* Estilos para formularios, botones, etc. si se incluyen más adelante */
-input,
-button {
-  font-family: 'Roboto', sans-serif;
-  padding: 10px;
-  margin: 10px 0;
-  border: none;
-  border-radius: 5px;
-  outline: none;
-}
-
-button {
-  background-color: #007bff;
-  color: white;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #0056b3;
+  margin: 0;
+  display: flex;
 }

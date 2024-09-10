@@ -22,7 +22,7 @@ const Login = () => {
   };
 
   return (
-    <div className="login-container d-flex align-items-center justify-content-center">
+    <div className="login-container d-flex align-items-center justify-content-center login">
       <div className="login-box shadow-lg p-4">
         <div className="text-center">
           <FaCircleUser className="user-icon mb-4" />
