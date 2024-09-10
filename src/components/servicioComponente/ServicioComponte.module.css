@@ -1,4 +1,4 @@
-    /* ServicioComponte.module.css */
+/* ServicioComponte.module.css */
 .servicioContainer {
     padding: 1rem;
     max-width: 800px;
@@ -16,7 +16,7 @@
     padding: 1rem;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    border-left: 5px solid #FF6F0F; /* Color dinámico basado en el gasto */
+    border-left: 5px solid #FF6F0F;
   }
   
   .gastoCard h3 {
@@ -31,5 +31,21 @@
   
   .gastoCard strong {
     font-weight: bold;
+  }
+  
+  /* Spinner de carga */
+  .loader {
+    border: 8px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 8px solid #FF6F0F; /* Color principal del spinner */
+    width: 60px;
+    height: 60px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto; /* Centrar el spinner */
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
   }
   
