@@ -25,7 +25,7 @@
     100% { transform: rotate(360deg); }
   }
   
-  p {
+  .spinnerP {
     color: white;
     margin-top: 1rem;
     font-size: 1.2rem;

@@ -5,7 +5,7 @@ const AnimacionCarga = ({mensaje}) => {
   return (
     <div className={styles.overlay}>
       <div className={styles.spinner}></div>
-      <p>{mensaje}...</p>
+      <p className={styles.spinnerP}>{mensaje}...</p>
     </div>
   );
 };

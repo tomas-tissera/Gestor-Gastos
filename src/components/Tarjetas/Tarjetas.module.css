@@ -97,12 +97,7 @@
     flex-direction: row;
   }
   
-  .progressBar > progress {
-    width: 100%;
-    height: 100%;
-    border-radius: 10px;
-    -webkit-appearance: none;
-  }
+ 
   
   .progressBar > progress::-webkit-progress-bar {
     background-color: #e0e0e0;

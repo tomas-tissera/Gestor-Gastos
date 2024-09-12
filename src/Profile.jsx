@@ -1,5 +1,6 @@
 import Navbar from "./components/navbar/index"
 import "./Profile.css"
+import Home from "./views/Home"
 const Profile = () => {
 
     return (
@@ -7,7 +8,7 @@ const Profile = () => {
             <div className="contenedor">
 
                 <Navbar/>
-                hola
+                <Home/>
             </div>
             </>
     )
