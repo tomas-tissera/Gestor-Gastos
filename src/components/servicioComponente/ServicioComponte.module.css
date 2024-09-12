@@ -47,7 +47,34 @@
   .editIcon:hover {
     transform: scale(1.1); /* Animación de hover */
   }
-  
+    /* Añadir estilos para el contenedor de botones */
+  .buttonGroup {
+    display: flex;
+    gap: 10px; /* Espacio entre los botones */
+  }
+
+  /* Estilo para el botón de editar */
+  .editIcon {
+    cursor: pointer;
+  }
+
+  /* Estilo para el botón de borrar */
+  .deleteButton {
+    position: absolute;
+    top: 90px;
+    right: 10px;
+    background-color: #dd2323; /* Color rojo para el botón de borrar */
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+
+  .deleteButton:hover {
+    background-color: rgb(165, 2, 2); /* Color rojo más oscuro en hover */
+  }
+
   /* Spinner de carga */
   .loader {
     border: 8px solid #f3f3f3;
@@ -63,4 +90,5 @@
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
+  
   

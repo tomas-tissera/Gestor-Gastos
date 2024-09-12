@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { db } from '../../firebase';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom'; // Hook para redirigir
 import { FaEdit } from 'react-icons/fa';
 import styles from './ServicioComponte.module.css';
@@ -21,58 +21,52 @@ const ServicioComponte = () => {
   const fetchGastos = async () => {
     try {
       const querySnapshot = await getDocs(collection(db, 'gastos'));
-      const gastosList = querySnapshot.docs.map(doc => {
-        const data = doc.data();
+      const gastosList = await Promise.all(querySnapshot.docs.map(async docSnap => {
+        const data = docSnap.data();
         const today = new Date();
-        let fechaDebitar;
+        let fechaDebitar = new Date(data.fecha); // Intentar convertir fecha
 
-        // Convertir fecha desde Firestore a objeto Date
-        if (typeof data.fecha === 'string') {
-          fechaDebitar = new Date(data.fecha); // Convertir cadena de texto a Date
-        } else {
-          console.warn(`Formato de fecha no reconocido: ${data.fecha}`);
-          return null; // Retornar null si el formato no es válido
-        }
-
-        // Verificar si la fecha es válida
+        // Manejar errores en fecha inválida, asignando fecha actual si es necesario
         if (isNaN(fechaDebitar.getTime())) {
-          console.error(`Fecha inválida para el gasto ID: ${doc.id}`);
-          return null; // Retornar null si la fecha es inválida
+          console.error(`Fecha inválida para el gasto ID: ${docSnap.id}, usando fecha actual.`);
+          fechaDebitar = today; // Usar fecha actual si la original es inválida
         }
 
-        const ciclo = parseInt(data.cantCiclo, 10); // Convertir a número entero
+        const ciclo = parseInt(data.cantCiclo, 10);
 
-        // Verificar el valor de ciclo
+        // Manejar errores en el ciclo, asignando ciclo predeterminado
         if (isNaN(ciclo) || ciclo <= 0) {
-          console.error(`Valor de ciclo inválido para el gasto ID: ${doc.id}. Valor recibido: ${data.cantCiclo}`);
-          return null; // Retornar null si el valor de ciclo es inválido
+          console.error(`Ciclo inválido para el gasto ID: ${docSnap.id}, usando ciclo predeterminado (30 días).`);
+          return {
+            id: docSnap.id,
+            ...data,
+            color: data.color || '#000000', // Color por defecto
+            fechaProxima: 'Ciclo inválido' // Mostrar mensaje si ciclo es inválido
+          };
         }
 
         // Calcular la fecha más próxima
         let fechaProxima = new Date(fechaDebitar);
-        console.log(`Fecha Debitar Inicial: ${fechaDebitar.toISOString()}`);
-        console.log(`Ciclo: ${ciclo}`);
-
-        // Si la fecha ya pasó, sumar ciclos completos hasta encontrar la próxima fecha futura
         while (fechaProxima < today) {
           fechaProxima.setDate(fechaProxima.getDate() + ciclo);
-          console.log(`Fecha Proxima Calculada: ${fechaProxima.toISOString()}`);
         }
 
-        // Verificar el valor de fechaProxima antes de convertirlo a formato dd-mm-yyyy
-        if (isNaN(fechaProxima.getTime())) {
-          console.error(`Fecha próxima inválida para el gasto ID: ${doc.id}`);
-          return null; // Retornar null si la fecha próxima es inválida
+        // Si la fecha cambió, actualizar en Firestore
+        if (fechaProxima.getTime() !== fechaDebitar.getTime()) {
+          console.log(`Actualizando fecha próxima para el gasto ID: ${docSnap.id}`);
+          const docRef = doc(db, 'gastos', docSnap.id);
+          await updateDoc(docRef, { fecha: fechaProxima.toISOString() });
         }
 
         return {
-          id: doc.id,
+          id: docSnap.id,
           ...data,
+          color: data.color || '#000000', // Asignar color por defecto si no existe
           fechaProxima: formatDate(fechaProxima) // Formatear a dd-mm-yyyy
         };
-      }).filter(gasto => gasto !== null); // Filtrar valores nulos
+      }));
 
-      setGastos(gastosList);
+      setGastos(gastosList); // Asignar la lista de gastos
     } catch (error) {
       console.error("Error fetching gastos:", error);
     } finally {
@@ -89,6 +83,19 @@ const ServicioComponte = () => {
     navigate(`/servicios/${gastoId}`);
   };
 
+  const handleDelete = async (gastoId) => {
+    if (window.confirm("¿Estás seguro de que deseas eliminar este gasto?")) {
+      try {
+        await deleteDoc(doc(db, 'gastos', gastoId));
+        setGastos(gastos.filter(gasto => gasto.id !== gastoId)); // Actualizar la lista de gastos
+        alert("Gasto eliminado con éxito.");
+      } catch (error) {
+        console.error("Error eliminando gasto:", error);
+        alert("Hubo un error al eliminar el gasto.");
+      }
+    }
+  };
+
   return (
     <div className={styles.servicioContainer}>
       <h2>Gastos Creados</h2>
@@ -97,16 +104,30 @@ const ServicioComponte = () => {
       ) : (
         <div className={styles.gastosList}>
           {gastos.map(gasto => (
-            <div key={gasto.id} className={styles.gastoCard} style={{ borderLeft: `5px solid ${gasto.color}` }}>
-              <FaEdit 
-                className={styles.editIcon} 
-                onClick={() => handleEdit(gasto.id)} // Redirige a la página de edición
-              />
-              <h3>{gasto.nombreGasto}</h3>
-              <p><strong>Monto:</strong> ${gasto.monto}</p>
-              <p><strong>Fecha Próxima a Debitar:</strong> {gasto.fechaProxima}</p>
-              {gasto.descripcion && <p><strong>Descripción:</strong> {gasto.descripcion}</p>}
-            </div>
+            gasto && ( // Asegurarse de que `gasto` no sea null
+              <div 
+                key={gasto.id} 
+                className={styles.gastoCard} 
+                style={{ borderLeft: `5px solid ${gasto.color || '#000000'}` }} // Asegurarse de que `gasto.color` sea válido
+              >
+                <div className={styles.buttonGroup}>
+                  <FaEdit 
+                    className={styles.editIcon} 
+                    onClick={() => handleEdit(gasto.id)} // Redirige a la página de edición
+                  />
+                  <button 
+                    onClick={() => handleDelete(gasto.id)} 
+                    className={styles.deleteButton}
+                  >
+                    Borrar
+                  </button>
+                </div>
+                <h3>{gasto.nombreGasto}</h3>
+                <p><strong>Monto:</strong> ${gasto.monto}</p>
+                <p><strong>Fecha Próxima a Debitar:</strong> {gasto.fechaProxima || 'Fecha no disponible'}</p>
+                {gasto.descripcion && <p><strong>Descripción:</strong> {gasto.descripcion}</p>}
+              </div>
+            )
           ))}
         </div>
       )}
