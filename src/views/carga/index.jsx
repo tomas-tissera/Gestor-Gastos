@@ -1,12 +1,64 @@
-import Navbar from "../../components/navbar";
-import CargaComp from "../../components/cargaComponente";
-const Carga = () => {
+import * as React from 'react';
+import PropTypes from 'prop-types';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import Box from '@mui/material/Box';
+import CargaComp from '../../components/cargaComponente';
+import CargaTarjeta from '../../components/CargaCompTarjeta';
+import Navbar from "../../components/navbar"
+function CustomTabPanel(props) {
+  const { children, value, index, ...other } = props;
+
   return (
-    <>
-        <Navbar/>
-        <CargaComp/>
-    </>
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+    </div>
   );
+}
+
+CustomTabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.number.isRequired,
+  value: PropTypes.number.isRequired,
 };
 
-export default Carga;
+function a11yProps(index) {
+  return {
+    id: `simple-tab-${index}`,
+    'aria-controls': `simple-tabpanel-${index}`,
+  };
+}
+
+export default function Carga() {
+  const [value, setValue] = React.useState(0);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
+  return (
+    <>
+    <Navbar/>
+    <Box sx={{ width: '100%' }}>
+      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+        <Tabs value={value} onChange={handleChange} aria-label="tabs">
+          <Tab label="Agregar Gasto" {...a11yProps(0)} />
+          <Tab label="Agregar Gasto con Tarjeta" {...a11yProps(1)} />
+        </Tabs>
+      </Box>
+      <CustomTabPanel value={value} index={0}>
+        <CargaComp />
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={1}>
+        <CargaTarjeta />
+      </CustomTabPanel>
+    </Box>
+    </>
+  );
+}
