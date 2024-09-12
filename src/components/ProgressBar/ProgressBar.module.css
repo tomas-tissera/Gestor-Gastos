@@ -1,0 +1,33 @@
+/* src/components/ProgressBar.module.css */
+.progressContainer {
+    margin: 1rem 0;
+  }
+  
+  .progressLabel {
+    font-weight: bold;
+  }
+  
+  .progressBar {
+    position: relative;
+    background-color: #e0e0e0;
+    border-radius: 4px;
+    height: 20px;
+    width: 100%;
+  }
+  
+  .progressFill {
+    background-color: #FF6F0F;
+    height: 100%;
+    border-radius: 4px;
+    color: rgb(0, 0, 0);
+    text-align: center;
+    line-height: 20px; /* Ajusta según la altura de la barra de progreso */
+  }
+  
+  .progressText {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    left: 0;
+  }
+  

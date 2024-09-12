@@ -1,9 +1,11 @@
+// src/components/Home.js
 import React, { useState, useEffect } from 'react';
 import { db } from '../../firebase';
 import { collection, getDocs } from 'firebase/firestore';
 import { Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement } from 'chart.js';
 import styles from './Home.module.css';
+import ProgressBar from '../../components/ProgressBar'; // Asegúrate de tener este componente creado
 
 ChartJS.register(Title, Tooltip, Legend, ArcElement);
 
@@ -45,12 +47,16 @@ const Home = () => {
     fetchData();
   }, []);
 
+  // Calcular porcentaje de cuotas pagadas
+  const calcularPorcentajePagado = (cuotas, cuotasPagadas) => {
+    return cuotas ? ((cuotasPagadas / cuotas) * 100).toFixed(2) : 0;
+  };
+
   // Preparar datos para gráficos
   const prepararDatosServicios = () => {
     const nombresGasto = gastosServicios.map(gasto => gasto.nombreGasto);
     const montos = gastosServicios.map(gasto => parseFloat(gasto.monto));
     const colores = gastosServicios.map(gasto => gasto.color || '#FF6F0F'); // Color por defecto si no está especificado
-
 
     const totalMonto = montos.reduce((acc, monto) => acc + monto, 0);
 
@@ -60,7 +66,6 @@ const Home = () => {
         label: 'Monto de Gastos de Servicios',
         data: montos,
         backgroundColor: colores,
-
       }],
       totalMonto: isNaN(totalMonto) ? 0 : parseFloat(totalMonto.toFixed(2))
     };
@@ -75,7 +80,13 @@ const Home = () => {
         acc[tarjetaNombre] = { total: 0, detalles: [] };
       }
       acc[tarjetaNombre].total += parseFloat(gasto.montoTotal);
-      acc[tarjetaNombre].detalles.push({ nombre: gasto.nombreGasto, monto: parseFloat(gasto.montoTotal) });
+      acc[tarjetaNombre].detalles.push({
+        id: gasto.id,
+        nombre: gasto.nombreGasto,
+        monto: parseFloat(gasto.montoTotal),
+        cuotas: gasto.cuotas,
+        cuotasPagadas: gasto.cuotasPagadas
+      });
       return acc;
     }, {});
 
@@ -128,14 +139,18 @@ const Home = () => {
         <h2>Gastos por Tarjeta</h2>
         {tarjetasData.map(tarjeta => (
           <div key={tarjeta.nombre} className={styles.tarjetaContainer}>
-            <h3>{tarjetas.undefined}</h3>
+            <h3>{tarjeta.nombre}</h3>
             <ul className={styles.gastosList}>
-              {tarjeta.detalles.map((detalle, index) => (
-                <li key={index} className={styles.gastoItem}>
-                  <span className={styles.gastoNombre}>{detalle.nombre}</span>
-                  <span className={styles.gastoMonto}>${detalle.monto.toFixed(2)}</span>
-                </li>
-              ))}
+              {tarjeta.detalles.map(detalle => {
+                const porcentaje = calcularPorcentajePagado(detalle.cuotas, detalle.cuotasPagadas);
+                return (
+                  <li key={detalle.id} className={styles.gastoItem}>
+                    <span className={styles.gastoNombre}>{detalle.nombre}</span>
+                    <span className={styles.gastoMonto}>${detalle.monto.toFixed(2)}</span>
+                    <ProgressBar porcentaje={porcentaje} /> {/* Usa el nuevo componente aquí */}
+                  </li>
+                );
+              })}
             </ul>
             <div className={styles.totalContainer}>
               <h4>Total de Gastos:</h4>

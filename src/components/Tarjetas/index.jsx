@@ -6,6 +6,7 @@ import styles from './Tarjetas.module.css';
 import Navbar from '../navbar';
 import { useNavigate } from 'react-router-dom';
 import AnimacionCarga from '../AnimacionCarga';
+import ProgressBar from '../ProgressBar'; // Importa el nuevo componente
 
 const Tarjetas = () => {
   const [tarjetas, setTarjetas] = useState([]);
@@ -82,21 +83,7 @@ const Tarjetas = () => {
                   <p><strong>Fecha realizada:</strong> {new Date(gasto.fecha).toLocaleDateString() || "No Disponible"}</p>
                   <p><strong>Cuotas:</strong> {gasto.cuotas || "No Disponible"}</p>
                   <p><strong>Cuotas pagadas:</strong> {gasto.cuotasPagadas || "No Disponible"}</p>
-                  <div className={styles.progressContainer}>
-                    <p className={styles.progressLabel}>
-                      <strong>Porcentaje de cuotas pagadas:</strong>
-                    </p>
-                    <div className={styles.progressBar}>
-                      <div
-                        className={styles.progressFill}
-                        style={{ width: `${porcentaje}%` }}
-                      >
-                        <span className={styles.progressText}>
-                          {porcentaje}%
-                        </span>
-                      </div>
-                    </div>
-                  </div>
+                  <ProgressBar porcentaje={porcentaje} /> {/* Usa el nuevo componente aquí */}
                   <button className={styles.editButton} onClick={() => handleEdit(gasto.id)}>Editar Gasto</button>
                 </div>
               );
