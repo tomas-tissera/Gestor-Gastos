@@ -99,7 +99,7 @@ const Home = () => {
   const datosServicios = prepararDatosServicios();
   const tarjetasData = prepararDatosTarjetas();
 
-  if (loading) return <p>Loading...</p>; // Reemplaza con tu componente de carga si es necesario
+  if (loading) return <div className={styles.loader}></div>; // Reemplaza con tu componente de carga si es necesario
 
   return (
     <div className={styles.container}>

@@ -63,11 +63,10 @@ const Tarjetas = () => {
     navigate(`/tarjetas/${gastoId}`);
   };
 
-  if (loading) return <AnimacionCarga />;
+  if (loading) return <div className={styles.loader}></div>;
 
   return (
     <>
-      <Navbar />
       <div className={styles.container}>
         {Object.keys(gastos).map(tarjetaNombre => (
           <div key={tarjetaNombre} className={styles.tarjetaContainer}>

@@ -149,4 +149,18 @@
     line-height: 20px; /* Aligns text vertically */
     color: rgb(2, 2, 2);
   }
-  
+    /* Spinner de carga */
+    .loader {
+      border: 8px solid #f3f3f3;
+      border-radius: 50%;
+      border-top: 8px solid #FF6F0F; /* Color principal del spinner */
+      width: 60px;
+      height: 60px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
