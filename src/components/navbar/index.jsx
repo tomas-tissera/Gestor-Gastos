@@ -39,6 +39,15 @@ const Navbar = () => {
         </li>
         <li>
           <NavLink 
+            to="/tarjetas" 
+            activeClassName="active"
+            className="nav-item"
+          >
+            Tarjetas
+          </NavLink>
+        </li>
+        <li>
+          <NavLink 
             to="/actualizar" 
             activeClassName="active"
             className="nav-item"

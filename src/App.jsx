@@ -6,6 +6,8 @@ import Carga from "./views/carga";
 import Servicios from "./views/servicios";
 import Actualizar from "./views/actualizar";
 import EditarG from "./views/editarG"
+import Tarjetas from "./components/Tarjetas"
+import EditarGastoTarjeta from "./components/EditarGastoTarjeta";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 const App = () => {
@@ -19,6 +21,9 @@ const App = () => {
             <Route path="/servicios/:id" element={<EditarG />} />
             <Route path = "/actualizar" element = { <Actualizar></Actualizar> } ></Route>
             <Route path = "/profile" element = { <Profile></Profile> }></Route>
+            <Route path = "/tarjetas" element = { <Tarjetas></Tarjetas> }></Route>
+            <Route path="/tarjetas/:gastoId" element={<EditarGastoTarjeta />} /> {/* Agregar esta ruta */}
+
           </Route>
       </Routes>
     </BrowserRouter>
