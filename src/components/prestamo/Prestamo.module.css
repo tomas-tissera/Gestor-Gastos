@@ -44,9 +44,6 @@ h1 {
     background-color: #f9f9f9;
 }
 
-.table tr:hover {
-    background-color: #81818131;
-}
 
 /* Botón de edición */
 .editButton {
@@ -184,5 +181,67 @@ h1 {
     align-items: center;
     background: rgba(0, 0, 0, 0.5);
     z-index: 9999;
+  }
+  /* src/components/Prestamo.module.css */
+.container {
+    padding: 20px;
+  }
+  
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .table th, .table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+  }
+  
+  .table th {
+    background-color: #f4f4f4;
+  }
+  
+  .editButton {
+    color: #ffffff;
+    text-decoration: none;
+  }
+  
+  .pagoButton {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+  }
+  
+  .pagoButton:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
+  }
+  
+  .loaderContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  .loader {
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    border-top: 4px solid #007bff;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  /* Nueva clase para mostrar fondo opaco */
+  .paidRow {
+    background-color: rgba(0, 255, 0, 0.2); /* Color de fondo opaco cuando el préstamo está pagado */
   }
   

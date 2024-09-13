@@ -76,8 +76,9 @@ const Prestamo = () => {
         <tbody>
           {prestamos.map(prestamo => {
             const bancoNombre = bancos.find(banco => banco.id === prestamo.banco)?.nombre || 'Desconocido';
+            const isPaid = prestamo.cuotasPagadas >= prestamo.cuotas; // Verifica si el préstamo está completamente pagado
             return (
-              <tr key={prestamo.id}>
+              <tr key={prestamo.id} className={isPaid ? styles.paidRow : ''}>
                 <td>{bancoNombre}</td>
                 <td>{prestamo.montoTotal}</td>
                 <td>{prestamo.cuotas}</td>
