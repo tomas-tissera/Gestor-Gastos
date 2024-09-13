@@ -3,10 +3,9 @@ import React, { useState, useEffect } from 'react';
 import { db } from '../../firebase';
 import { collection, getDocs } from 'firebase/firestore';
 import styles from './Tarjetas.module.css';
-import Navbar from '../navbar';
 import { useNavigate } from 'react-router-dom';
-import AnimacionCarga from '../AnimacionCarga';
 import ProgressBar from '../ProgressBar'; // Importa el nuevo componente
+import { FaEdit } from 'react-icons/fa'; // Importa el ícono de edición
 
 const Tarjetas = () => {
   const [tarjetas, setTarjetas] = useState([]);
@@ -59,38 +58,43 @@ const Tarjetas = () => {
     return cuotas ? ((cuotasPagadas / cuotas) * 100).toFixed(2) : 0;
   };
 
-  const handleEdit = (gastoId) => {
+  const handleEditGasto = (gastoId) => {
     navigate(`/tarjetas/${gastoId}`);
+  };
+
+  const handleEditTarjeta = (tarjetaId) => {
+    navigate(`/tarjetas/editarTarjeta/${tarjetaId}`); // Redirige a la página de edición de tarjeta
   };
 
   if (loading) return <div className={styles.loader}></div>;
 
   return (
-    <>
-      <div className={styles.container}>
-        {Object.keys(gastos).map(tarjetaNombre => (
-          <div key={tarjetaNombre} className={styles.tarjetaContainer}>
-            <h2 className={styles.tarjetaTitle}>{tarjetaNombre}</h2>
-            {gastos[tarjetaNombre].map(gasto => {
-              const porcentaje = calcularPorcentajePagado(gasto.cuotas, gasto.cuotasPagadas);
-              return (
-                <div key={gasto.id} className={styles.gastoItem}>
-                  <h3>{gasto.nombreGasto || "Nombre del Gasto No Disponible"}</h3>
-                  <p><strong>Descripción:</strong> {gasto.descripcion || "No Disponible"}</p>
-                  <p><strong>Monto por cuota:</strong> ${gasto.valorCuota?.toFixed(2) || "No Disponible"}</p>
-                  <p><strong>Monto total:</strong> ${gasto.montoTotal?.toFixed(2) || "No Disponible"}</p>
-                  <p><strong>Fecha realizada:</strong> {new Date(gasto.fecha).toLocaleDateString() || "No Disponible"}</p>
-                  <p><strong>Cuotas:</strong> {gasto.cuotas || "No Disponible"}</p>
-                  <p><strong>Cuotas pagadas:</strong> {gasto.cuotasPagadas || "No Disponible"}</p>
-                  <ProgressBar porcentaje={porcentaje} /> {/* Usa el nuevo componente aquí */}
-                  <button className={styles.editButton} onClick={() => handleEdit(gasto.id)}>Editar Gasto</button>
-                </div>
-              );
-            })}
+    <div className={styles.container}>
+      {tarjetas.map(tarjeta => (
+        <div key={tarjeta.id} className={styles.tarjetaContainer}>
+          <div className={styles.editIcon} onClick={() => handleEditTarjeta(tarjeta.id)}>
+            <FaEdit />
           </div>
-        ))}
-      </div>
-    </>
+          <h2 className={styles.tarjetaTitle}>{tarjeta.nombre}</h2>
+          {gastos[tarjeta.nombre]?.map(gasto => {
+            const porcentaje = calcularPorcentajePagado(gasto.cuotas, gasto.cuotasPagadas);
+            return (
+              <div key={gasto.id} className={styles.gastoItem}>
+                <h3>{gasto.nombreGasto || "Nombre del Gasto No Disponible"}</h3>
+                <p><strong>Descripción:</strong> {gasto.descripcion || "No Disponible"}</p>
+                <p><strong>Monto por cuota:</strong> ${gasto.valorCuota?.toFixed(2) || "No Disponible"}</p>
+                <p><strong>Monto total:</strong> ${gasto.montoTotal?.toFixed(2) || "No Disponible"}</p>
+                <p><strong>Fecha realizada:</strong> {new Date(gasto.fecha).toLocaleDateString() || "No Disponible"}</p>
+                <p><strong>Cuotas:</strong> {gasto.cuotas || "No Disponible"}</p>
+                <p><strong>Cuotas pagadas:</strong> {gasto.cuotasPagadas || "No Disponible"}</p>
+                <ProgressBar porcentaje={porcentaje} />
+                <button className={styles.editButton} onClick={() => handleEditGasto(gasto.id)}>Editar Gasto</button>
+              </div>
+            );
+          })}
+        </div>
+      ))}
+    </div>
   );
 };
 
