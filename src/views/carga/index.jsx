@@ -5,6 +5,7 @@ import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import CargaComp from '../../components/cargaComponente';
 import CargaTarjeta from '../../components/CargaCompTarjeta';
+import Prestamo from '../../components/prestamo';
 import Navbar from "../../components/navbar"
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -50,6 +51,7 @@ export default function Carga() {
         <Tabs value={value} onChange={handleChange} aria-label="tabs">
           <Tab label="Agregar Gasto" {...a11yProps(0)} />
           <Tab label="Agregar Gasto con Tarjeta" {...a11yProps(1)} />
+          <Tab label="Agregar Prestamo" {...a11yProps(2)} />
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
@@ -57,6 +59,9 @@ export default function Carga() {
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
         <CargaTarjeta />
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={2}>
+        <Prestamo />
       </CustomTabPanel>
     </Box>
     </>
