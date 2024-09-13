@@ -51,3 +51,12 @@
   justify-content: center;
   align-items: center;
 }
+.resumenTarjeta {
+  font-weight: bold;
+  margin-top: 1rem;
+}
+/* Tarjetas.module.css */
+.pagado {
+  opacity: 0.5; /* Cambia la opacidad para los gastos completamente pagados */
+  color: #888;  /* Cambia el color del texto si es necesario */
+}

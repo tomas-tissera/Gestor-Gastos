@@ -73,17 +73,17 @@ const Home = () => {
 
   const prepararDatosTarjetas = () => {
     const tarjetaGastos = gastosTarjeta.reduce((acc, gasto) => {
-      const tarjetaId = gasto.tarjeta;
-      const tarjetaNombre = tarjetas[tarjetaId] || 'Desconocida'; // Obtener nombre de la tarjeta
+      
+      const tarjetaNombre = tarjetas.undefined || 'Desconocida'; // Obtener nombre de la tarjeta
       
       if (!acc[tarjetaNombre]) {
         acc[tarjetaNombre] = { total: 0, detalles: [] };
       }
-      acc[tarjetaNombre].total += parseFloat(gasto.montoTotal);
+      acc[tarjetaNombre].total += parseFloat(gasto.valorCuota);
       acc[tarjetaNombre].detalles.push({
         id: gasto.id,
         nombre: gasto.nombreGasto,
-        monto: parseFloat(gasto.montoTotal),
+        monto: parseFloat(gasto.valorCuota),
         cuotas: gasto.cuotas,
         cuotasPagadas: gasto.cuotasPagadas
       });

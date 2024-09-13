@@ -7,6 +7,7 @@ import CargaComp from '../../components/cargaComponente';
 import CargaTarjeta from '../../components/CargaCompTarjeta';
 import Prestamo from '../../components/AgregarPrestamo';
 import Navbar from "../../components/navbar"
+import styles from "./Carga.module.css"
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -46,24 +47,27 @@ export default function Carga() {
   return (
     <>
     <Navbar/>
-    <Box sx={{ width: '100%' }}>
-      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs value={value} onChange={handleChange} aria-label="tabs">
-          <Tab label="Agregar Gasto" {...a11yProps(0)} />
-          <Tab label="Agregar Gasto con Tarjeta" {...a11yProps(1)} />
-          <Tab label="Agregar Prestamo" {...a11yProps(2)} />
-        </Tabs>
+    <div className={styles.boxSelect}>
+
+      <Box sx={{ width: '100%',display:"flex", flexDirection:"column" ,alignContent:"center" }} className={styles.boxSelect}>
+        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+          <Tabs value={value} onChange={handleChange} aria-label="tabs">
+            <Tab label="Agregar Gasto" {...a11yProps(0)} />
+            <Tab label="Agregar Gasto con Tarjeta" {...a11yProps(1)} />
+            <Tab label="Agregar Prestamo" {...a11yProps(2)} />
+          </Tabs>
+        </Box>
+        <CustomTabPanel value={value} index={0}>
+          <CargaComp />
+        </CustomTabPanel>
+        <CustomTabPanel value={value} index={1}>
+          <CargaTarjeta />
+        </CustomTabPanel>
+        <CustomTabPanel value={value} index={2}>
+          <Prestamo />
+        </CustomTabPanel>
       </Box>
-      <CustomTabPanel value={value} index={0}>
-        <CargaComp />
-      </CustomTabPanel>
-      <CustomTabPanel value={value} index={1}>
-        <CargaTarjeta />
-      </CustomTabPanel>
-      <CustomTabPanel value={value} index={2}>
-        <Prestamo />
-      </CustomTabPanel>
-    </Box>
+    </div>
     </>
   );
 }
