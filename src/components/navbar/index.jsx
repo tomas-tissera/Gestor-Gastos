@@ -48,11 +48,11 @@ const Navbar = () => {
         </li>
         <li>
           <NavLink 
-            to="/actualizar" 
+            to="/prestamos" 
             activeClassName="active"
             className="nav-item"
           >
-            Actualizar
+            Prestamos
           </NavLink>
         </li>
       </ul>

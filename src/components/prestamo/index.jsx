@@ -1,178 +1,113 @@
+// src/components/Prestamo.js
 import React, { useState, useEffect } from 'react';
 import { db } from '../../firebase';
-import { collection, addDoc, getDocs } from 'firebase/firestore';
-import styles from './CargaPrestamo.module.css';
-import AgregarBanco from "../AgregarBanco"
-import AnimacionCarga from '../AnimacionCarga';
+import { collection, getDocs, doc, updateDoc } from 'firebase/firestore';
+import { Link } from 'react-router-dom';
+import styles from './Prestamo.module.css'; // Importa el archivo CSS
+import { FaEdit, FaCheck } from 'react-icons/fa'; // Importa el ícono de Font Awesome
 
-const CargaPrestamo = () => {
-  const [montoTotal, setMontoTotal] = useState('');
-  const [banco, setBanco] = useState('');
-  const [diaPago, setDiaPago] = useState('');
-  const [cuotas, setCuotas] = useState(1);
-  const [cuotasPagadas, setCuotasPagadas] = useState(0);
-  const [valorCuota, setValorCuota] = useState('');
+const Prestamo = () => {
+  const [prestamos, setPrestamos] = useState([]);
   const [bancos, setBancos] = useState([]);
-  const [showAgregarBanco, setShowAgregarBanco] = useState(false);
-  const [cargando, setCargando] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [loadingUpdate, setLoadingUpdate] = useState(null); // Para la animación de carga
 
   useEffect(() => {
-    const fetchBancos = async () => {
+    const fetchData = async () => {
       try {
-        const querySnapshot = await getDocs(collection(db, "bancos"));
-        const bancosData = querySnapshot.docs.map(doc => ({
+        // Obtener bancos
+        const bancosSnapshot = await getDocs(collection(db, "bancos"));
+        const bancosData = bancosSnapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data(),
         }));
         setBancos(bancosData);
+
+        // Obtener préstamos
+        const prestamosSnapshot = await getDocs(collection(db, "prestamos"));
+        const prestamosData = prestamosSnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setPrestamos(prestamosData);
       } catch (e) {
-        console.error("Error al obtener bancos: ", e);
+        console.error("Error al obtener datos: ", e);
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchBancos();
+    fetchData();
   }, []);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setCargando(true);
-
-    if (!montoTotal || !banco || !diaPago || cuotas <= 0 || cuotasPagadas < 0 || cuotasPagadas > cuotas) {
-      alert("Por favor completa todos los campos requeridos y verifica la cantidad de cuotas pagadas.");
-      setCargando(false);
-      return;
-    }
-
+  const handlePago = async (prestamoId, cuotasPagadas) => {
+    setLoadingUpdate(prestamoId); // Muestra la animación de carga para el préstamo actual
     try {
-      await addDoc(collection(db, "prestamos"), {
-        montoTotal: parseFloat(montoTotal),
-        banco,
-        diaPago: new Date(diaPago).toISOString(),
-        cuotas: parseInt(cuotas, 10),
-        cuotasPagadas: parseInt(cuotasPagadas, 10),
-        valorCuota: parseFloat(valorCuota),
+      const prestamoRef = doc(db, "prestamos", prestamoId);
+      await updateDoc(prestamoRef, {
+        cuotasPagadas: cuotasPagadas + 1
       });
-      alert('Préstamo añadido con éxito!');
-      setMontoTotal('');
-      setBanco('');
-      setDiaPago('');
-      setCuotas(1);
-      setCuotasPagadas(0);
-      setValorCuota('');
+      // Actualiza el estado del componente para reflejar los cambios
+      setPrestamos(prestamos.map(p => p.id === prestamoId ? { ...p, cuotasPagadas: cuotasPagadas + 1 } : p));
     } catch (e) {
-      console.error("Error al añadir préstamo: ", e);
-      alert("Hubo un error al cargar el préstamo.");
+      console.error("Error al actualizar el préstamo: ", e);
     } finally {
-      setCargando(false);
+      setLoadingUpdate(null); // Oculta la animación de carga
     }
   };
 
-  const handleMontoTotalChange = (e) => {
-    const monto = e.target.value;
-    setMontoTotal(monto);
-    if (cuotas > 0) {
-      setValorCuota((monto / cuotas).toFixed(2));
-    }
-  };
-
-  const handleCuotasChange = (e) => {
-    const cuota = e.target.value;
-    setCuotas(cuota);
-    if (montoTotal) {
-      setValorCuota((montoTotal / cuota).toFixed(2));
-    }
-  };
-
-  const handleCuotasPagadasChange = (e) => {
-    setCuotasPagadas(e.target.value);
-  };
+  if (loading) return <div className={styles.loaderContainer}><div className={styles.loader}></div></div>;
 
   return (
-    <div>
-      {cargando && <AnimacionCarga />}
-      <form onSubmit={handleSubmit} className={styles.formContainer}>
-        <div className={styles.formGroup}>
-          <label className={styles.label}>Monto Total:</label>
-          <input 
-            type="number" 
-            value={montoTotal} 
-            onChange={handleMontoTotalChange} 
-            required 
-            className={styles.input}
-          />
-        </div>
-        <div className={styles.formGroup}>
-          <label className={styles.label}>Seleccionar banco:</label>
-          <select 
-            value={banco} 
-            onChange={(e) => setBanco(e.target.value)} 
-            required 
-            className={styles.input}
-          >
-            <option value="">Selecciona un banco</option>
-            {bancos.map(banco => (
-              <option key={banco.id} value={banco.id}>{banco.nombre}</option>
-            ))}
-          </select>
-        </div>
-        <div className={styles.formGroup}>
-          <button 
-            type="button" 
-            onClick={() => setShowAgregarBanco(true)} 
-            className={styles.button}
-          >
-            Agregar Banco
-          </button>
-        </div>
-        <div className={styles.formGroup}>
-          <label className={styles.label}>Día de Pago:</label>
-          <input 
-            type="date" 
-            value={diaPago} 
-            onChange={(e) => setDiaPago(e.target.value)} 
-            required 
-            className={styles.input}
-          />
-        </div>
-        <div className={styles.formGroup}>
-          <label className={styles.label}>Cantidad de cuotas:</label>
-          <input 
-            type="number" 
-            value={cuotas} 
-            onChange={handleCuotasChange} 
-            min="1" 
-            required 
-            className={styles.input}
-          />
-        </div>
-        <div className={styles.formGroup}>
-          <label className={styles.label}>Cantidad de cuotas pagadas:</label>
-          <input 
-            type="number" 
-            value={cuotasPagadas} 
-            onChange={handleCuotasPagadasChange} 
-            min="0" 
-            max={cuotas} 
-            required 
-            className={styles.input}
-          />
-        </div>
-        <div className={styles.formGroup}>
-          <label className={styles.label}>Valor de cuota:</label>
-          <input 
-            type="text" 
-            value={valorCuota} 
-            readOnly 
-            className={styles.input}
-          />
-        </div>
-        <button type="submit" className={styles.button}>Añadir Préstamo</button>
-      </form>
-      {showAgregarBanco && (
-        <AgregarBanco onClose={() => setShowAgregarBanco(false)} />
-      )}
+    <div className={styles.container}>
+      <h1>Préstamos</h1>
+      <table className={styles.table}>
+        <thead>
+          <tr>
+            <th>Banco</th>
+            <th>Monto Pedido</th>
+            <th>Cuotas</th>
+            <th>Cuotas Pagadas</th>
+            <th>Fecha de Pago</th>
+            <th>Acción</th>
+            <th>Pago</th>
+          </tr>
+        </thead>
+        <tbody>
+          {prestamos.map(prestamo => {
+            const bancoNombre = bancos.find(banco => banco.id === prestamo.banco)?.nombre || 'Desconocido';
+            return (
+              <tr key={prestamo.id}>
+                <td>{bancoNombre}</td>
+                <td>{prestamo.montoTotal}</td>
+                <td>{prestamo.cuotas}</td>
+                <td>{prestamo.cuotasPagadas}</td>
+                <td>{new Date(prestamo.diaPago).toLocaleDateString()}</td>
+                <td>
+                  <Link to={`/prestamos/${prestamo.id}`} className={styles.editButton}>
+                    Editar
+                  </Link>
+                </td>
+                <td>
+                  <button 
+                    onClick={() => handlePago(prestamo.id, prestamo.cuotasPagadas)}
+                    className={styles.pagoButton}
+                    disabled={prestamo.cuotasPagadas >= prestamo.cuotas || loadingUpdate === prestamo.id}
+                  >
+                    {loadingUpdate === prestamo.id ? (
+                      <div className={styles.loader}></div>
+                    ) : (
+                      <FaCheck />
+                    )}
+                  </button>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
     </div>
   );
 };
 
-export default CargaPrestamo;
+export default Prestamo;

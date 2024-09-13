@@ -5,7 +5,7 @@ import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import CargaComp from '../../components/cargaComponente';
 import CargaTarjeta from '../../components/CargaCompTarjeta';
-import Prestamo from '../../components/prestamo';
+import Prestamo from '../../components/AgregarPrestamo';
 import Navbar from "../../components/navbar"
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
