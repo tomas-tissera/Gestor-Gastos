@@ -6,7 +6,7 @@ import styles from './Tarjetas.module.css';
 import { useNavigate } from 'react-router-dom';
 import ProgressBar from '../ProgressBar'; // Importa el nuevo componente
 import { FaEdit } from 'react-icons/fa'; // Importa el ícono de edición
-
+import AnimacionCarga from '../AnimacionCarga';
 const Tarjetas = () => {
   const [tarjetas, setTarjetas] = useState([]);
   const [gastos, setGastos] = useState({});
@@ -63,7 +63,7 @@ const Tarjetas = () => {
   };
 
   const handleEditTarjeta = (tarjetaId) => {
-    navigate(`/tarjetas/editarTarjeta/${tarjetaId}`); // Redirige a la página de edición de tarjeta
+    navigate(`/tarjetas/editarTarjeta/${tarjetaId}`);
   };
 
   if (loading) return <div className={styles.loader}></div>;
@@ -78,12 +78,16 @@ const Tarjetas = () => {
           <h2 className={styles.tarjetaTitle}>{tarjeta.nombre}</h2>
           {gastos[tarjeta.nombre]?.map(gasto => {
             const porcentaje = calcularPorcentajePagado(gasto.cuotas, gasto.cuotasPagadas);
+
+            const valorCuota = Number(gasto.valorCuota);
+            const montoTotal = Number(gasto.montoTotal);
+
             return (
               <div key={gasto.id} className={styles.gastoItem}>
                 <h3>{gasto.nombreGasto || "Nombre del Gasto No Disponible"}</h3>
                 <p><strong>Descripción:</strong> {gasto.descripcion || "No Disponible"}</p>
-                <p><strong>Monto por cuota:</strong> ${gasto.valorCuota?.toFixed(2) || "No Disponible"}</p>
-                <p><strong>Monto total:</strong> ${gasto.montoTotal?.toFixed(2) || "No Disponible"}</p>
+                <p><strong>Monto por cuota:</strong> ${!isNaN(valorCuota) ? valorCuota.toFixed(2) : "No Disponible"}</p>
+                <p><strong>Monto total:</strong> ${!isNaN(montoTotal) ? montoTotal.toFixed(2) : "No Disponible"}</p>
                 <p><strong>Fecha realizada:</strong> {new Date(gasto.fecha).toLocaleDateString() || "No Disponible"}</p>
                 <p><strong>Cuotas:</strong> {gasto.cuotas || "No Disponible"}</p>
                 <p><strong>Cuotas pagadas:</strong> {gasto.cuotasPagadas || "No Disponible"}</p>

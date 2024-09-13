@@ -53,7 +53,7 @@ const CargaTarjeta = () => {
     e.preventDefault();
     setCargando(true);
 
-    if (!nombreGasto || !fecha || !tarjeta || !banco || !montoTotal || cuotas <= 0 || cuotasPagadas < 0 || cuotasPagadas > cuotas) {
+    if (!nombreGasto || !fecha || !tarjeta  || !montoTotal ) {
       alert("Por favor completa todos los campos requeridos y verifica la cantidad de cuotas pagadas.");
       setCargando(false);
       return;
@@ -72,6 +72,7 @@ const CargaTarjeta = () => {
         valorCuota: parseFloat(valorCuota),
       });
       alert('Gasto añadido con éxito!');
+      // Limpiar el formulario
       setNombreGasto('');
       setDescripcion('');
       setFecha('');
@@ -162,12 +163,52 @@ const CargaTarjeta = () => {
             Agregar Tarjeta
           </button>
         </div>
-        {/* Rest of the form for cuotas and monto */}
-        {/* ... */}
+        <div className={styles.formGroup}>
+          <label className={styles.label}>Monto total:</label>
+          <input 
+            type="number" 
+            value={montoTotal} 
+            onChange={handleMontoTotalChange} 
+            required 
+            className={styles.input}
+          />
+        </div>
+        <div className={styles.formGroup}>
+          <label className={styles.label}>Número de cuotas:</label>
+          <input 
+            type="number" 
+            value={cuotas} 
+            onChange={handleCuotasChange} 
+            min="1"
+            required 
+            className={styles.input}
+          />
+        </div>
+        <div className={styles.formGroup}>
+          <label className={styles.label}>Cuotas pagadas:</label>
+          <input 
+            type="number" 
+            value={cuotasPagadas} 
+            onChange={handleCuotasPagadasChange} 
+            min="0"
+            max={cuotas}
+            required 
+            className={styles.input}
+          />
+        </div>
+        <div className={styles.formGroup}>
+          <label className={styles.label}>Valor por cuota:</label>
+          <input 
+            type="text" 
+            value={valorCuota} 
+            readOnly 
+            className={styles.input}
+          />
+        </div>
         <button type="submit" className={styles.button}>Añadir Gasto</button>
       </form>
       {showAgregarTarjeta && <AgregarTarjeta onClose={() => setShowAgregarTarjeta(false)} />}
-      
+      {showAgregarBanco && <AgregarBanco onClose={() => setShowAgregarBanco(false)} />}
     </div>
   );
 };

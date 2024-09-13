@@ -93,7 +93,7 @@ const Prestamo = () => {
             return (
               <tr key={prestamo.id} className={isPaid ? styles.paidRow : ''}>
                 <td>{bancoNombre}</td>
-                <td>{prestamo.montoTotal}</td>
+                <td>${prestamo.montoTotal}</td>
                 <td>{prestamo.cuotas}</td>
                 <td>{prestamo.cuotasPagadas}</td>
                 <td>{prestamo.diaPago.substring(0, 10)}</td> {/* Muestra la fecha exacta en formato DD/MM/YYYY */}
