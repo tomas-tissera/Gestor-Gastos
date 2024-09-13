@@ -1,58 +1,99 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { db } from '../../firebase';
-import { collection, addDoc } from 'firebase/firestore';
+import { collection, addDoc, getDocs } from 'firebase/firestore';
 import styles from './AgregarTarjeta.module.css';
+import AgregarBanco from '../AgregarBanco';
 
 const AgregarTarjeta = ({ onClose }) => {
   const [nombreTarjeta, setNombreTarjeta] = useState('');
-  const [fechaPago, setFechaPago] = useState('');
+  const [banco, setBanco] = useState('');
+  const [bancos, setBancos] = useState([]);
+  const [showAgregarBanco, setShowAgregarBanco] = useState(false);
+
+  useEffect(() => {
+    const fetchBancos = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, "bancos"));
+        const bancosData = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setBancos(bancosData);
+      } catch (e) {
+        console.error("Error al obtener bancos: ", e);
+      }
+    };
+
+    fetchBancos();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!nombreTarjeta || !fechaPago) {
-      alert("Por favor completa todos los campos requeridos.");
+
+    if (!nombreTarjeta || !banco) {
+      alert("Por favor completa todos los campos.");
       return;
     }
 
     try {
       await addDoc(collection(db, "tarjetas"), {
         nombre: nombreTarjeta,
-        fechaPago: new Date(fechaPago).toISOString(),
+        banco,
       });
       alert('Tarjeta añadida con éxito!');
-      onClose(); // Cierra el formulario después de agregar la tarjeta
+      setNombreTarjeta('');
+      setBanco('');
+      onClose();
     } catch (e) {
       console.error("Error al añadir tarjeta: ", e);
-      alert("Hubo un error al añadir la tarjeta.");
+      alert("Hubo un error al cargar la tarjeta.");
     }
   };
 
   return (
-    <div className={styles.overlay}>
-      <form onSubmit={handleSubmit} className={styles.formContainer}>
-        <div className={styles.formGroup}>
-          <label className={styles.label}>Nombre de la tarjeta:</label>
-          <input 
-            type="text" 
-            value={nombreTarjeta} 
-            onChange={(e) => setNombreTarjeta(e.target.value)} 
-            required 
-            className={styles.input}
-          />
-        </div>
-        <div className={styles.formGroup}>
-          <label className={styles.label}>Fecha de pago:</label>
-          <input 
-            type="date" 
-            value={fechaPago} 
-            onChange={(e) => setFechaPago(e.target.value)} 
-            required 
-            className={styles.input}
-          />
-        </div>
-        <button type="submit" className={styles.button}>Añadir Tarjeta</button>
-        <button type="button" onClick={onClose} className={styles.button}>Cancelar</button>
-      </form>
+    <div className={styles.modal}>
+      <div className={styles.modalContent}>
+        <button className={styles.closeButton} onClick={onClose}>X</button>
+        <form onSubmit={handleSubmit} className={styles.formContainer}>
+          <div className={styles.formGroup}>
+            <label className={styles.label}>Nombre de la tarjeta:</label>
+            <input 
+              type="text" 
+              value={nombreTarjeta} 
+              onChange={(e) => setNombreTarjeta(e.target.value)} 
+              required 
+              className={styles.input}
+            />
+          </div>
+          <div className={styles.formGroup}>
+            <label className={styles.label}>Seleccionar banco:</label>
+            <select 
+              value={banco} 
+              onChange={(e) => setBanco(e.target.value)} 
+              required 
+              className={styles.input}
+            >
+              <option value="">Selecciona un banco</option>
+              {bancos.map(banco => (
+                <option key={banco.id} value={banco.id}>{banco.nombre}</option>
+              ))}
+            </select>
+          </div>
+          <div className={styles.formGroup}>
+            <button 
+              type="button" 
+              onClick={() => setShowAgregarBanco(true)} 
+              className={styles.button}
+            >
+              Agregar Banco
+            </button>
+          </div>
+          <button type="submit" className={styles.button}>Añadir Tarjeta</button>
+        </form>
+        {showAgregarBanco && (
+          <AgregarBanco onClose={() => setShowAgregarBanco(false)} />
+        )}
+      </div>
     </div>
   );
 };
