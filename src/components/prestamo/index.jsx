@@ -40,15 +40,28 @@ const Prestamo = () => {
     fetchData();
   }, []);
 
-  const handlePago = async (prestamoId, cuotasPagadas) => {
+  const handlePago = async (prestamoId, cuotasPagadas, diaPago) => {
     setLoadingUpdate(prestamoId); // Muestra la animación de carga para el préstamo actual
     try {
       const prestamoRef = doc(db, "prestamos", prestamoId);
+      const fechaHoy = new Date();
+      let fechaPago = new Date(diaPago);
+
+      // Crear una nueva fecha con un día adicional
+      fechaPago.setUTCDate(fechaPago.getUTCDate() + 1);
+
+      // Si la nueva fecha es menor que el primer día del mes actual, ajustar al primer día del próximo mes
+      const primerDiaMesActual = new Date(fechaHoy.getFullYear(), fechaHoy.getMonth(), 1);
+      if (fechaPago < primerDiaMesActual) {
+        fechaPago = new Date(fechaHoy.getFullYear(), fechaHoy.getMonth() + 1, 1);
+      }
+
       await updateDoc(prestamoRef, {
-        cuotasPagadas: cuotasPagadas + 1
+        cuotasPagadas: cuotasPagadas + 1,
+        diaPago: fechaPago.toISOString() // Usar ISO string para actualizar
       });
       // Actualiza el estado del componente para reflejar los cambios
-      setPrestamos(prestamos.map(p => p.id === prestamoId ? { ...p, cuotasPagadas: cuotasPagadas + 1 } : p));
+      setPrestamos(prestamos.map(p => p.id === prestamoId ? { ...p, cuotasPagadas: cuotasPagadas + 1, diaPago: fechaPago.toISOString() } : p));
     } catch (e) {
       console.error("Error al actualizar el préstamo: ", e);
     } finally {
@@ -83,15 +96,15 @@ const Prestamo = () => {
                 <td>{prestamo.montoTotal}</td>
                 <td>{prestamo.cuotas}</td>
                 <td>{prestamo.cuotasPagadas}</td>
-                <td>{new Date(prestamo.diaPago).toLocaleDateString()}</td>
+                <td>{prestamo.diaPago.substring(0, 10)}</td> {/* Muestra la fecha exacta en formato DD/MM/YYYY */}
                 <td>
                   <Link to={`/prestamos/${prestamo.id}`} className={styles.editButton}>
-                    Editar
+                    <FaEdit />
                   </Link>
                 </td>
                 <td>
                   <button 
-                    onClick={() => handlePago(prestamo.id, prestamo.cuotasPagadas)}
+                    onClick={() => handlePago(prestamo.id, prestamo.cuotasPagadas, prestamo.diaPago)}
                     className={styles.pagoButton}
                     disabled={prestamo.cuotasPagadas >= prestamo.cuotas || loadingUpdate === prestamo.id}
                   >
