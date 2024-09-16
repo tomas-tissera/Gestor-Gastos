@@ -6,6 +6,7 @@ import { Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement } from 'chart.js';
 import styles from './Home.module.css';
 import ProgressBar from '../../components/ProgressBar'; // Asegúrate de tener este componente creado
+import Tarjetas from '../../components/Tarjetas';
 
 ChartJS.register(Title, Tooltip, Legend, ArcElement);
 
@@ -137,27 +138,8 @@ const Home = () => {
 
       <div className={styles.gastosTarjetaContainer}>
         <h2>Gastos por Tarjeta</h2>
-        {tarjetasData.map(tarjeta => (
-          <div key={tarjeta.nombre} className={styles.tarjetaContainer}>
-            <h3>{tarjeta.nombre}</h3>
-            <ul className={styles.gastosList}>
-              {tarjeta.detalles.map(detalle => {
-                const porcentaje = calcularPorcentajePagado(detalle.cuotas, detalle.cuotasPagadas);
-                return (
-                  <li key={detalle.id} className={styles.gastoItem}>
-                    <span className={styles.gastoNombre}>{detalle.nombre}</span>
-                    <span className={styles.gastoMonto}>${detalle.monto.toFixed(2)}</span>
-                    <ProgressBar porcentaje={porcentaje} /> {/* Usa el nuevo componente aquí */}
-                  </li>
-                );
-              })}
-            </ul>
-            <div className={styles.totalContainer}>
-              <h4>Total de Gastos:</h4>
-              <p className={styles.totalMonto}>${tarjeta.total.toFixed(2)}</p>
-            </div>
-          </div>
-        ))}
+        <Tarjetas/>
+        
       </div>
     </div>
   );
