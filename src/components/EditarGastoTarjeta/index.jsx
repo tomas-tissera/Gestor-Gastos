@@ -87,13 +87,12 @@ const EditarGasto = () => {
     setTarjetaNombre(selectedTarjeta ? selectedTarjeta.nombre : '');
   };
 
-  if (loading) return <AnimacionCarga mensaje="Cargando"/>; // Mostrar animación de carga mientras se actualiza
+  if (loading) return  <div className={styles.loader}></div>; // Mostrar el spinner mientras carga
 
   if (!gasto) return <p>Loading...</p>;
 
   return (
     <>
-      <Navbar/>
       <div className={styles.container}>
         <h1>Editar Gasto</h1>
         <div className={styles.formGroup}>

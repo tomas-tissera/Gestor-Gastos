@@ -40,3 +40,20 @@ textarea {
 .button:hover {
   background-color: #e65d0b;
 }
+
+  /* Spinner de carga */
+  .loader {
+    border: 8px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 8px solid #FF6F0F; /* Color del spinner */
+    width: 60px;
+    height: 60px;
+    animation: spin 1s linear infinite;
+    margin: 2rem auto; /* Centrar el spinner */
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
