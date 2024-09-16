@@ -80,7 +80,6 @@ const EditarPrestamo = () => {
 
   return (
     <>
-      <Navbar />
       <div className={styles.formContainer}>
         <h2>Editar Préstamo</h2>
         <form onSubmit={handleUpdate}>

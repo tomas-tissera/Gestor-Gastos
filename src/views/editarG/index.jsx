@@ -3,7 +3,6 @@ import EditarGasto from "../../components/EditarGasto";
 const EditarG = () => {
   return (
     <>
-        <Navbar/>
         <EditarGasto/>
     </>
   );

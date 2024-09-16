@@ -3,7 +3,6 @@ import Prestamo from "../../components/prestamo";
 const Prestamos = () => {
   return (
     <>
-        <Navbar/>
         <Prestamo/>
     </>
   );

@@ -46,7 +46,6 @@ export default function Carga() {
 
   return (
     <>
-    <Navbar/>
     <div className={styles.boxSelect}>
 
       <Box sx={{ width: '100%',display:"flex", flexDirection:"column" ,alignContent:"center" }} className={styles.boxSelect}>

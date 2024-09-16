@@ -3,7 +3,6 @@ import ServicioComponte from "../../components/servicioComponente";
 const Servicios = () => {
   return (
     <>
-        <Navbar/>
         <ServicioComponte/>
     </>
   );

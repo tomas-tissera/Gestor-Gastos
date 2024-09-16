@@ -90,7 +90,6 @@ const EditarTarjeta = () => {
 
   return (
     <>
-      <Navbar/>
       <div className={styles.formContainer}>
         <h2>Editar Tarjeta</h2>
         {showSuccess && <div className={styles.successAnimation}></div>} {/* Animación de éxito */}

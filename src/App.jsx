@@ -11,10 +11,11 @@ import EditarGastoTarjeta from "./components/EditarGastoTarjeta";
 import EditarTarjeta from "./components/EditarTarjeta";
 import EditarPrestamo from "./components/EditarPrestamo";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
+import Navbar from "./components/navbar";
 const App = () => {
   return (
     <BrowserRouter>
+    <Navbar/>
       <Routes>
           <Route path = "/" element = { <Layout></Layout> }>
             <Route index element = { <Login></Login> }></Route>

@@ -7,7 +7,6 @@ const Profile = () => {
             <>
             <div className="contenedor">
 
-                <Navbar/>
                 <Home/>
             </div>
             </>

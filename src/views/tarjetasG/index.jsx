@@ -3,7 +3,6 @@ import Tarjetas from "../../components/Tarjetas";
 const TarjetasGastos = () => {
   return (
     <>
-        <Navbar/>
         <Tarjetas></Tarjetas>
        
     </>
