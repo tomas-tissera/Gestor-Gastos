@@ -22,7 +22,12 @@ const EditarGasto = () => {
       const docRef = doc(db, 'gastos', id);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
-        setGasto(docSnap.data());
+        const data = docSnap.data();
+        // Si la fecha es una cadena, recortar solo la parte YYYY-MM-DD
+        if (data.fecha && typeof data.fecha === 'string') {
+          data.fecha = data.fecha.split('T')[0]; // Extrae la parte YYYY-MM-DD
+        }
+        setGasto(data);
       } else {
         console.log("No such document!");
       }
@@ -30,6 +35,7 @@ const EditarGasto = () => {
     };
     fetchGasto();
   }, [id]);
+  
 
   const handleChange = (e) => {
     setGasto({
