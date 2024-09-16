@@ -79,11 +79,12 @@ const Prestamo = () => {
           <tr>
             <th>Banco</th>
             <th>Monto Pedido</th>
+            <th>Monto Pagado</th>
+            <th>Monto Restante</th>
             <th>Cuotas</th>
             <th>Cuotas Pagadas</th>
             <th>Fecha de Pago</th>
             <th>Acción</th>
-            <th>Pago</th>
           </tr>
         </thead>
         <tbody>
@@ -94,6 +95,8 @@ const Prestamo = () => {
               <tr key={prestamo.id} className={isPaid ? styles.paidRow : ''}>
                 <td>{bancoNombre}</td>
                 <td>${prestamo.montoTotal}</td>
+                <td>${prestamo.montoPagado||0}</td>
+                <td>${prestamo.montoTotal - prestamo.montoPagado}</td>
                 <td>{prestamo.cuotas}</td>
                 <td>{prestamo.cuotasPagadas}</td>
                 <td>{prestamo.diaPago.substring(0, 10)}</td> {/* Muestra la fecha exacta en formato DD/MM/YYYY */}
@@ -101,19 +104,6 @@ const Prestamo = () => {
                   <Link to={`/prestamos/${prestamo.id}`} className={styles.editButton}>
                     <FaEdit />
                   </Link>
-                </td>
-                <td>
-                  <button 
-                    onClick={() => handlePago(prestamo.id, prestamo.cuotasPagadas, prestamo.diaPago)}
-                    className={styles.pagoButton}
-                    disabled={prestamo.cuotasPagadas >= prestamo.cuotas || loadingUpdate === prestamo.id}
-                  >
-                    {loadingUpdate === prestamo.id ? (
-                      <div className={styles.loader}></div>
-                    ) : (
-                      <FaCheck />
-                    )}
-                  </button>
                 </td>
               </tr>
             );

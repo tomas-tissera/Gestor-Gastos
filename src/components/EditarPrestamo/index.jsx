@@ -1,8 +1,8 @@
 // src/components/EditarPrestamo.js
 import React, { useState, useEffect } from 'react';
 import { db } from '../../firebase';
-import { doc, getDoc, updateDoc, collection, getDocs } from 'firebase/firestore';
-import { useParams, useNavigate } from 'react-router-dom';
+import { doc, getDoc, updateDoc, collection, getDocs, addDoc } from 'firebase/firestore';
+import { useParams } from 'react-router-dom';
 import styles from './EditarPrestamo.module.css';
 import Navbar from '../navbar'; // Si tienes un componente Navbar
 
@@ -11,10 +11,12 @@ const EditarPrestamo = () => {
   const [prestamo, setPrestamo] = useState(null);
   const [bancos, setBancos] = useState([]);
   const [nuevoBanco, setNuevoBanco] = useState('');
+  const [nuevoPago, setNuevoPago] = useState(0);
+  const [fechaPago, setFechaPago] = useState('');
   const [loading, setLoading] = useState(true);
   const [loadingUpdate, setLoadingUpdate] = useState(false);
   const [loadingAddBanco, setLoadingAddBanco] = useState(false);
-  const navigate = useNavigate();
+  const [loadingAddPago, setLoadingAddPago] = useState(false); // Para manejar el estado del botón de agregar pago
 
   useEffect(() => {
     const fetchData = async () => {
@@ -53,7 +55,6 @@ const EditarPrestamo = () => {
         ...prestamo,
       });
       alert('Préstamo actualizado con éxito!');
-      navigate('/prestamos');
     } catch (e) {
       console.error("Error al actualizar el préstamo: ", e);
     } finally {
@@ -76,6 +77,87 @@ const EditarPrestamo = () => {
     }
   };
 
+  const handleAddPago = async () => {
+    if (!nuevoPago || !fechaPago) return;
+    setLoadingAddPago(true);
+    try {
+      const prestamoRef = doc(db, "prestamos", prestamoId);
+
+      // Agregar el pago al historial de pagos
+      const nuevoHistorialPago = {
+        monto: parseFloat(nuevoPago),
+        fecha: fechaPago,
+      };
+
+      const nuevoMontoPagado = prestamo.montoPagado + parseFloat(nuevoPago);
+
+      await updateDoc(prestamoRef, {
+        montoPagado: nuevoMontoPagado,
+        historialPagos: [...(prestamo.historialPagos || []), nuevoHistorialPago],
+        cuotasPagadas: (prestamo.cuotasPagadas || 0) + 1 // Incrementar la cantidad de cuotas pagadas
+      });
+
+      // Actualizar el estado con el nuevo total y limpiar los campos
+      setPrestamo({
+        ...prestamo,
+        montoPagado: nuevoMontoPagado,
+        historialPagos: [...(prestamo.historialPagos || []), nuevoHistorialPago],
+        cuotasPagadas: (prestamo.cuotasPagadas || 0) + 1
+      });
+
+      setNuevoPago(0);
+      setFechaPago('');
+    } catch (e) {
+      console.error("Error al agregar el pago: ", e);
+    } finally {
+      setLoadingAddPago(false);
+    }
+  };
+
+  const handleDeletePago = async (pago) => {
+    if (window.confirm("¿Estás seguro de que deseas eliminar este pago?")) {
+      try {
+        console.log("Pago a eliminar:", pago);
+  
+        // Filtrar el historial de pagos para eliminar el pago seleccionado
+        const nuevoHistorialPagos = prestamo.historialPagos.filter(p => {
+          console.log(`Comparando pago con fecha: ${p.fecha} y monto: ${p.monto}`);
+          return !(p.fecha === pago.fecha && p.monto === pago.monto);
+        });
+  
+        console.log("Nuevo historial de pagos:", nuevoHistorialPagos);
+  
+        // Calcular el nuevo monto pagado y la cantidad de cuotas pagadas
+        const montoRestante = (prestamo.montoPagado || 0) - pago.monto;
+        const nuevasCuotasPagadas = (prestamo.cuotasPagadas || 0) - 1;
+  
+        console.log(`Nuevo monto pagado: ${montoRestante}, Nuevas cuotas pagadas: ${nuevasCuotasPagadas}`);
+  
+        // Referencia al documento del préstamo en Firestore
+        const prestamoRef = doc(db, "prestamos", prestamoId);
+  
+        // Actualizar el documento en Firestore
+        await updateDoc(prestamoRef, {
+          montoPagado: montoRestante,
+          historialPagos: nuevoHistorialPagos,
+          cuotasPagadas: nuevasCuotasPagadas
+        });
+  
+        // Actualizar el estado local con los cambios
+        setPrestamo(prevPrestamo => ({
+          ...prevPrestamo,
+          montoPagado: montoRestante,
+          historialPagos: nuevoHistorialPagos,
+          cuotasPagadas: nuevasCuotasPagadas
+        }));
+  
+        alert("Pago eliminado con éxito.");
+      } catch (e) {
+        console.error("Error al eliminar el pago: ", e);
+      }
+    }
+  };
+  
   if (loading) return <div className={styles.loader}></div>;
 
   return (
@@ -126,7 +208,7 @@ const EditarPrestamo = () => {
             <label>Cantidad de Cuotas:</label>
             <input
               type="number"
-              value={prestamo?.cuotas || ''}
+              value={prestamo?.cuotas || 0}
               onChange={(e) => setPrestamo({ ...prestamo, cuotas: parseInt(e.target.value) })}
               className={styles.input}
             />
@@ -135,26 +217,71 @@ const EditarPrestamo = () => {
             <label>Cuotas Pagas:</label>
             <input
               type="number"
-              value={prestamo?.cuotasPagadas || ''}
+              value={prestamo?.cuotasPagadas || 0}
               onChange={(e) => setPrestamo({ ...prestamo, cuotasPagadas: parseInt(e.target.value) })}
               className={styles.input}
             />
           </div>
           <div className={styles.formGroup}>
-            <label>Fecha de Pago:</label>
+            <label>Monto pagado:</label>
             <input
-              type="date"
-              value={prestamo?.diaPago.split('T')[0] || ''}
-              onChange={(e) => setPrestamo({ ...prestamo, diaPago: e.target.value + 'T00:00:00.000Z' })}
+              type="number"
+              value={prestamo?.montoPagado || 0}
+              onChange={(e) => setPrestamo({ ...prestamo, montoPagado: parseInt(e.target.value) })}
               className={styles.input}
             />
+          </div>
+          {/* Sección para agregar nuevos pagos */}
+          <div className={styles.newPagoContainer}>
+            <input
+              type="number"
+              value={nuevoPago}
+              onChange={(e) => setNuevoPago(e.target.value)}
+              placeholder="Agregar nuevo Pago"
+              className={styles.input}
+            />
+            <input
+              type="date"
+              value={fechaPago}
+              onChange={(e) => setFechaPago(e.target.value)}
+              className={styles.input}
+            />
+            <button
+              type="button"
+              onClick={handleAddPago}
+              className={styles.button}
+              disabled={loadingAddPago}
+            >
+              {loadingAddPago ? <div className={styles.loader}></div> : 'Agregar Pago'}
+            </button>
+          </div>
+          {/* Historial de pagos */}
+          <div className={styles.pagosContainer}>
+            <h3>Historial de Pagos</h3>
+            {prestamo?.historialPagos && prestamo.historialPagos.length > 0 ? (
+              <ul>
+                {prestamo.historialPagos.map((pago, index) => (
+                  <li key={index}>
+                    {`Monto: ${pago.monto}, Fecha: ${pago.fecha}`}
+                    <button
+                      onClick={() => handleDeletePago(pago)}
+                      className={styles.deleteButton}
+                    >
+                      Eliminar
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>No hay pagos registrados.</p>
+            )}
           </div>
           <button
             type="submit"
             className={styles.button}
             disabled={loadingUpdate}
           >
-            {loadingUpdate ? <div className={styles.loader}></div> : 'Guardar cambios'}
+            {loadingUpdate ? <div className={styles.loader}></div> : 'Actualizar Préstamo'}
           </button>
         </form>
       </div>
