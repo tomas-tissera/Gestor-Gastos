@@ -1,4 +1,3 @@
-// src/components/EditarPrestamo.js
 import React, { useState, useEffect } from 'react';
 import { db } from '../../firebase';
 import { doc, getDoc, updateDoc, collection, getDocs, addDoc } from 'firebase/firestore';
@@ -16,7 +15,7 @@ const EditarPrestamo = () => {
   const [loading, setLoading] = useState(true);
   const [loadingUpdate, setLoadingUpdate] = useState(false);
   const [loadingAddBanco, setLoadingAddBanco] = useState(false);
-  const [loadingAddPago, setLoadingAddPago] = useState(false); // Para manejar el estado del botón de agregar pago
+  const [loadingAddPago, setLoadingAddPago] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -68,7 +67,7 @@ const EditarPrestamo = () => {
     try {
       await addDoc(collection(db, "bancos"), { nombre: nuevoBanco });
       setBancos([...bancos, { nombre: nuevoBanco }]);
-      setPrestamo({ ...prestamo, banco: nuevoBanco }); // Actualiza el banco seleccionado
+      setPrestamo({ ...prestamo, banco: nuevoBanco });
       setNuevoBanco('');
     } catch (e) {
       console.error("Error al agregar el banco: ", e);
@@ -83,7 +82,6 @@ const EditarPrestamo = () => {
     try {
       const prestamoRef = doc(db, "prestamos", prestamoId);
 
-      // Agregar el pago al historial de pagos
       const nuevoHistorialPago = {
         monto: parseFloat(nuevoPago),
         fecha: fechaPago,
@@ -94,10 +92,9 @@ const EditarPrestamo = () => {
       await updateDoc(prestamoRef, {
         montoPagado: nuevoMontoPagado,
         historialPagos: [...(prestamo.historialPagos || []), nuevoHistorialPago],
-        cuotasPagadas: (prestamo.cuotasPagadas || 0) + 1 // Incrementar la cantidad de cuotas pagadas
+        cuotasPagadas: (prestamo.cuotasPagadas || 0) + 1
       });
 
-      // Actualizar el estado con el nuevo total y limpiar los campos
       setPrestamo({
         ...prestamo,
         montoPagado: nuevoMontoPagado,
@@ -117,53 +114,43 @@ const EditarPrestamo = () => {
   const handleDeletePago = async (pago) => {
     if (window.confirm("¿Estás seguro de que deseas eliminar este pago?")) {
       try {
-        console.log("Pago a eliminar:", pago);
-  
-        // Filtrar el historial de pagos para eliminar el pago seleccionado
-        const nuevoHistorialPagos = prestamo.historialPagos.filter(p => {
-          console.log(`Comparando pago con fecha: ${p.fecha} y monto: ${p.monto}`);
-          return !(p.fecha === pago.fecha && p.monto === pago.monto);
-        });
-  
-        console.log("Nuevo historial de pagos:", nuevoHistorialPagos);
-  
-        // Calcular el nuevo monto pagado y la cantidad de cuotas pagadas
+        const nuevoHistorialPagos = prestamo.historialPagos.filter(p => !(p.fecha === pago.fecha && p.monto === pago.monto));
+
         const montoRestante = (prestamo.montoPagado || 0) - pago.monto;
         const nuevasCuotasPagadas = (prestamo.cuotasPagadas || 0) - 1;
-  
-        console.log(`Nuevo monto pagado: ${montoRestante}, Nuevas cuotas pagadas: ${nuevasCuotasPagadas}`);
-  
-        // Referencia al documento del préstamo en Firestore
+
         const prestamoRef = doc(db, "prestamos", prestamoId);
-  
-        // Actualizar el documento en Firestore
+
         await updateDoc(prestamoRef, {
           montoPagado: montoRestante,
           historialPagos: nuevoHistorialPagos,
           cuotasPagadas: nuevasCuotasPagadas
         });
-  
-        // Actualizar el estado local con los cambios
+
         setPrestamo(prevPrestamo => ({
           ...prevPrestamo,
           montoPagado: montoRestante,
           historialPagos: nuevoHistorialPagos,
           cuotasPagadas: nuevasCuotasPagadas
         }));
-  
-        alert("Pago eliminado con éxito.");
+
+        alert("Pago eliminado con éxito. Recuerda actualizar el préstamo.");
       } catch (e) {
         console.error("Error al eliminar el pago: ", e);
       }
     }
   };
-  
+
+  const esPagoPermitido = prestamo?.cuotasPagadas < prestamo?.cuotas && prestamo?.montoPagado < prestamo?.montoTotal;
+  const mostrarError = prestamo?.cuotasPagadas === prestamo?.cuotas && prestamo?.montoPagado !== prestamo?.montoTotal;
+
   if (loading) return <div className={styles.loader}></div>;
 
   return (
-    <>
+    <div>
       <div className={styles.formContainer}>
         <h2>Editar Préstamo</h2>
+        {mostrarError && <p className={styles.error}>Error: El monto pagado no coincide con el monto total.</p>}
         <form onSubmit={handleUpdate}>
           <div className={styles.formGroup}>
             <label>Monto Total:</label>
@@ -232,40 +219,43 @@ const EditarPrestamo = () => {
             />
           </div>
           {/* Sección para agregar nuevos pagos */}
-          <div className={styles.newPagoContainer}>
+          <div className={`${styles.newPagoContainer} ${!esPagoPermitido ? styles.disabled : ''}`}>
+            <label>Agregar Pago:</label>
             <input
               type="number"
               value={nuevoPago}
               onChange={(e) => setNuevoPago(e.target.value)}
               placeholder="Agregar nuevo Pago"
               className={styles.input}
+              disabled={!esPagoPermitido}
             />
             <input
               type="date"
               value={fechaPago}
               onChange={(e) => setFechaPago(e.target.value)}
               className={styles.input}
+              disabled={!esPagoPermitido}
             />
             <button
               type="button"
               onClick={handleAddPago}
               className={styles.button}
-              disabled={loadingAddPago}
+              disabled={!esPagoPermitido || loadingAddPago}
             >
               {loadingAddPago ? <div className={styles.loader}></div> : 'Agregar Pago'}
             </button>
           </div>
-          {/* Historial de pagos */}
+          {/* Listar pagos realizados */}
           <div className={styles.pagosContainer}>
             <h3>Historial de Pagos</h3>
-            {prestamo?.historialPagos && prestamo.historialPagos.length > 0 ? (
+            {prestamo?.historialPagos?.length > 0 ? (
               <ul>
                 {prestamo.historialPagos.map((pago, index) => (
-                  <li key={index}>
-                    {`Monto: ${pago.monto}, Fecha: ${pago.fecha}`}
+                  <li key={index} className={styles.pagoItem}>
+                    {pago.monto} - {pago.fecha}
                     <button
                       onClick={() => handleDeletePago(pago)}
-                      className={styles.deleteButton}
+                      className={styles.button}
                     >
                       Eliminar
                     </button>
@@ -276,16 +266,14 @@ const EditarPrestamo = () => {
               <p>No hay pagos registrados.</p>
             )}
           </div>
-          <button
-            type="submit"
-            className={styles.button}
-            disabled={loadingUpdate}
-          >
-            {loadingUpdate ? <div className={styles.loader}></div> : 'Actualizar Préstamo'}
-          </button>
+          <div className={styles.buttonContainer}>
+            <button type="submit" className={styles.button} disabled={loadingUpdate}>
+              {loadingUpdate ? <div className={styles.loader}></div> : 'Actualizar Préstamo'}
+            </button>
+          </div>
         </form>
       </div>
-    </>
+    </div>
   );
 };
 
