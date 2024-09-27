@@ -12,7 +12,6 @@ import EditarGastoTarjeta from "./components/EditarGastoTarjeta";
 import EditarTarjeta from "./components/EditarTarjeta";
 import EditarPrestamo from "./components/EditarPrestamo";
 import Navbar from "./components/navbar";
-
 const App = () => {
   return (
     <BrowserRouter>

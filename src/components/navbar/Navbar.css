@@ -12,6 +12,22 @@
     font-size: 1.5rem;
     font-weight: bold;
   }
+  .logout-btn {
+    background: none;
+    border: none;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    font-size: 1rem;
+    padding: 0;
+    color: white;
+  }
+  
+  .logout-btn:hover {
+    color: #ff0000; /* Cambiar el color al hacer hover */
+  }
   
   .navbar-links {
     list-style: none;

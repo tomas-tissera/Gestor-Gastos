@@ -1,8 +1,23 @@
 import React from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import './Navbar.css'; // Para agregar estilos personalizados
+import { IoIosLogOut } from "react-icons/io";
+import { signOut } from "firebase/auth";
+import { auth } from "../../firebase.js"; // Configuración de firebase
 
 const Navbar = () => {
+  const navigate = useNavigate();
+
+  // Función para manejar el cierre de sesión
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      navigate("/"); // Redirigir al login después de cerrar sesión
+    } catch (error) {
+      console.error("Error al cerrar sesión: ", error);
+    }
+  };
+
   return (
     <nav className="navbar">
       <div className="navbar-logo">
@@ -11,9 +26,9 @@ const Navbar = () => {
       <ul className="navbar-links">
         <li>
           <NavLink 
-            exact 
+            exact="true" 
             to="/profile" 
-            activeClassName="active"
+            activeclassname="active"
             className="nav-item"
           >
             Inicio
@@ -22,7 +37,7 @@ const Navbar = () => {
         <li>
           <NavLink 
             to="/carga" 
-            activeClassName="active"
+            activeclassname="active"
             className="nav-item"
           >
             Carga
@@ -31,7 +46,7 @@ const Navbar = () => {
         <li>
           <NavLink 
             to="/servicios" 
-            activeClassName="active"
+            activeclassname="active"
             className="nav-item"
           >
             Servicios
@@ -40,7 +55,7 @@ const Navbar = () => {
         <li>
           <NavLink 
             to="/tarjetas" 
-            activeClassName="active"
+            activeclassname="active"
             className="nav-item"
           >
             Tarjetas
@@ -49,11 +64,16 @@ const Navbar = () => {
         <li>
           <NavLink 
             to="/prestamos" 
-            activeClassName="active"
+            activeclassname="active"
             className="nav-item"
           >
             Prestamos
           </NavLink>
+        </li>
+        <li>
+          <button onClick={handleLogout} className="logout-btn">
+            <IoIosLogOut /> Salir
+          </button>
         </li>
       </ul>
     </nav>
