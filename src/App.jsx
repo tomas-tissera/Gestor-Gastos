@@ -27,9 +27,10 @@ const Main = () => {
   return (
     <>
       {/* Ocultar el Navbar si la ruta es "/" */}
-      {location.pathname !== "/" && <Navbar />}
+      {location.pathname !== "/" && location.pathname !== "/signup" && <Navbar />}
       <Routes>
         <Route path="/" element={<Layout />}>
+          <Route path="/signup" element={<Signup />} />
           <Route index element={<Login />} />
           <Route path="/carga" element={<Carga />} />
           <Route path="/servicios" element={<Servicios />} />

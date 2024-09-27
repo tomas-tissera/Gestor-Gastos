@@ -37,9 +37,9 @@ const Signup = () => {
             </div>
           )}
           <div className="signup-form-group">
-            <label htmlFor="signupEmail" className="signup-form-label">
+            {/* <label htmlFor="signupEmail" className="signup-form-label">
               Email Address
-            </label>
+            </label> */}
             <input
               id="signupEmail"
               type="email"
@@ -51,9 +51,9 @@ const Signup = () => {
             />
           </div>
           <div className="signup-form-group">
-            <label htmlFor="signupPassword" className="signup-form-label">
+            {/* <label htmlFor="signupPassword" className="signup-form-label">
               Password
-            </label>
+            </label> */}
             <input
               id="signupPassword"
               type="password"
@@ -65,9 +65,9 @@ const Signup = () => {
             />
           </div>
           <div className="signup-form-group">
-            <label htmlFor="confirmPassword" className="signup-form-label">
+            {/* <label htmlFor="confirmPassword" className="signup-form-label">
               Confirm Password
-            </label>
+            </label> */}
             <input
               id="confirmPassword"
               type="password"

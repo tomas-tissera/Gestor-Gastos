@@ -37,12 +37,9 @@ const Login = () => {
           )}
 
           <div className="mb-3">
-            <label htmlFor="email" className="form-label">
-              Email Address
-            </label>
             <input
               type="email"
-              className="form-control rounded-pill px-3"
+              className="form-control rounded-pill px-4"
               id="email"
               placeholder="name@example.com"
               value={email}
@@ -52,9 +49,7 @@ const Login = () => {
           </div>
 
           <div className="mb-3">
-            <label htmlFor="password" className="form-label">
-              Password
-            </label>
+           
             <input
               type="password"
               className="form-control rounded-pill px-3"
